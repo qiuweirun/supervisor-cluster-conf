@@ -18,7 +18,7 @@
 ## 启动集群
 * 需先安装docker、docker-compose服务，如果使用如下命令
 ```
-docker-compose -f /path/to/docker-compose.yml up
+docker-compose -f /path/to/dockercompose/docker-compose.yml up
 ```
 * 绑定如下host，然后再通过域名访问相应的服务
 ```
