@@ -16,7 +16,7 @@
 * `nginx-proxy`为子网访问入口，整个子网只暴露80和8080端口，通过域名的访问均通过80端口进行代理转发。
 
 ## 启动集群
-* 需先安装docker、docker-compose服务，如果使用如下命令
+* 需先安装docker、docker-compose服务，然后使用如下命令
 ```
 docker-compose -f /path/to/dockercompose/docker-compose.yml up
 ```
