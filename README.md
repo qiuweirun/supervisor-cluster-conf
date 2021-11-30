@@ -60,5 +60,5 @@ docker-compose -f /path/to/docker-compose.yml up
 
 ## 一些细节
 * 集群中，通过指定生效的机器IP地址来实现，`confd`自带的模板方法没有获取服务器IP的，这是一个稍微[二次开发的confd](https://github.com/qiuweirun/confd)服务。安装启动过程可见`dockercompose/dockerfile/Dockerfile-supervisord`的`22-51`行。
-* 还可以通过每台服务器维护一个唯一的hostname或者环境变量实现，有`confd`自带的模板方法支持。
+* 如不用上方的方式，还可以通过每台服务器维护一个唯一的hostname或者环境变量实现，有`confd`自带的模板方法支持。
 * `confd`的模板为`dockercompose/dockerfile/build/confd/app.tmpl`，与`etcd`的解码后的`content`组成完整的`supervisor`应用程序配置，并按照`dockercompose/dockerfile/build/confd/app.toml`定义的reload_cmd命令执行使生效。
