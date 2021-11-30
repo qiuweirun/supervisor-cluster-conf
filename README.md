@@ -46,6 +46,9 @@ docker-compose -f /path/to/docker-compose.yml up
 /services/apps/demo1/content   Y29tbWFuZCA9IC9wcm9qZWN0L2RlbW9fd2Vic2l0ZQpwcm9jZXNzX25hbWU9JShwcm9ncmFtX25hbWUpcwpzdGFydHNlY3MgPSAwCm51bXByb2NzID0gMQphdXRvc3RhcnQgPSB0cnVlCmF1dG9yZXN0YXJ0ID0gdHJ1ZQ==
 ```
 * 发布完成后再访问`monitor.ui.com`，已经看到demo1的进程
+---
+![image](https://github.com/qiuweirun/supervisor-cluster-conf/blob/main/docs/images/pub-view.png)
+---
 * 再次访问`demo.website1.com`看到如下页面：
 ---
 ![image](https://github.com/qiuweirun/supervisor-cluster-conf/blob/main/docs/images/demo1.png)
