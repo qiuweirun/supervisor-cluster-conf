@@ -1,0 +1,9 @@
+# demo
+#演示站点1
+192.168.99.100 demo.website1.com
+#原生控制页
+192.168.99.100 svadm.website1.com
+#开源管理后台
+192.168.99.100 monitor.ui.com
+#ETCD管理后台
+192.168.99.100 admin.etcd.com
