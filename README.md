@@ -7,6 +7,7 @@
 
 ## 介绍
 ![image](https://github.com/qiuweirun/supervisor-cluster-conf/blob/main/docs/images/net.jpg)
+---
 通过docker构建了一个集群场景，web机器上安装`supervisord`和`confd`服务，`confd`监听`etcd`。当往`etcd`发布配置后，监听的`confd`按照预定义的模板+etcd的配置生成应用进程的`supervisor`配置文件，并且当有变更时自动执行`supervisorctl update`命令。
 * etcd提供订阅发布服务
 * confd作为etcd的订阅者
