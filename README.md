@@ -34,16 +34,16 @@ docker-compose -f /path/to/docker-compose.yml up
 * `192.168.99.100:8080`为[nginxWebUI](https://github.com/cym1102/nginxWebUI)服务，配置负载均衡
 
 ## 效果演示
-![image](https://github.com/qiuweirun/supervisor-cluster-conf/blob/main/docs/images/net.jpg)
----
 * 访问`monitor.ui.com`，初始下三台web机只有`confd`的订阅者服务进程。
+![image](https://github.com/qiuweirun/supervisor-cluster-conf/blob/main/docs/images/init-view.png)
+---
 * 访问`demo.website1.com`，为503错误，通过下面配置让服务跑起来
-* 访问`admin.etcd.com`，发布如下配置。
+* 访问`admin.etcd.com`，发布如下配置（content为base64编码内容）。
 ```
 /services/apps/demo1/ips       172.16.238.11,172.16.238.12,172.16.238.13
 /services/apps/demo1/content   Y29tbWFuZCA9IC9wcm9qZWN0L2RlbW9fd2Vic2l0ZQpwcm9jZXNzX25hbWU9JShwcm9ncmFtX25hbWUpcwpzdGFydHNlY3MgPSAwCm51bXByb2NzID0gMQphdXRvc3RhcnQgPSB0cnVlCmF1dG9yZXN0YXJ0ID0gdHJ1ZQ==
 ```
 * 发布完成后再访问`monitor.ui.com`，已经看到demo1的进程
 * 再次访问`demo.website1.com`看到如下页面：
-![image](https://github.com/qiuweirun/supervisor-cluster-conf/blob/main/docs/images/net.jpg)
+![image](https://github.com/qiuweirun/supervisor-cluster-conf/blob/main/docs/images/demo1.png)
 ---
