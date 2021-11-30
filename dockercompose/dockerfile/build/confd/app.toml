@@ -1,0 +1,11 @@
+[template]
+prefix = ""
+src = "app.tmpl"
+dest = "/etc/supervisor/conf.d/app.conf"
+owner = "root"
+mode = "0644"
+keys = [
+  "{{etcd-key}}"
+]
+check_cmd = "/usr/bin/supervisorctl update"
+reload_cmd = "/usr/bin/supervisorctl update"

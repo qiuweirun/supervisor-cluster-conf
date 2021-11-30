@@ -1,0 +1,102 @@
+version: "3.5"
+services:
+  # web1-03
+  web1-03:
+    build:
+      context: ./dockerfile
+      dockerfile: Dockerfile-supervisord
+    privileged: true
+    # environment:
+    #   - ETCD_LISTEN_KEY=/services/apps
+    #   - ETCD_NODE_ADDR=http://etcd:2379
+    networks:
+      app_net:
+        ipv4_address: 172.16.238.13
+    container_name: web1-03
+  # web1-02
+  web1-02:
+    build:
+      context: ./dockerfile
+      dockerfile: Dockerfile-supervisord
+    privileged: true
+    # environment:
+    #   - ETCD_LISTEN_KEY=/services/apps
+    #   - ETCD_NODE_ADDR=http://etcd:2379
+    networks:
+      app_net:
+        ipv4_address: 172.16.238.12
+    container_name: web1-02
+  # web1-01
+  web1-01:
+    build:
+      context: ./dockerfile
+      dockerfile: Dockerfile-supervisord
+    privileged: true
+    # environment:
+    #   - ETCD_LISTEN_KEY=/services/apps
+    #   - ETCD_NODE_ADDR=http://etcd:2379
+    networks:
+      app_net:
+        ipv4_address: 172.16.238.11
+    container_name: web1-01
+
+  # nginx-proxy access point
+  nginx-proxy:
+    # image: cym1102/nginxwebui:latest
+    build:
+      context: ./dockerfile
+      dockerfile: Dockerfile-nginxWebUi
+    ports:
+      - 8080:8080
+      - 80:80
+    # volumes:
+    #   - /project/data/nginxUi:/home/nginxWebUI
+    environment:
+      - BOOT_OPTIONS=--server.port=8080
+    privileged: true
+    networks:
+      app_net:
+        ipv4_address: 172.16.238.10
+    # username: admin pwd: Admin123
+    container_name: nginx-proxy
+
+  # supervisor manager ui
+  monitor-ui:
+    image: banjocat/supervisord-monitor
+    privileged: true
+    environment:
+      - SERVERS=website1-01=172.16.238.11,website1-02=172.16.238.12,website1-03=172.16.238.13
+      - USERNAME=
+      - PASSWORD=
+    networks:
+      app_net:
+        ipv4_address: 172.16.238.9
+    container_name: monitor-ui
+
+  # etcd & keeper
+  etcd:
+    image: 'bitnami/etcd:latest'
+    environment:
+      - ALLOW_NONE_AUTHENTICATION=yes
+      - ETCD_ADVERTISE_CLIENT_URLS=http://etcd:2379
+    networks:
+      app_net:
+        ipv4_address: 172.16.238.8
+    container_name: etcd-service
+  etcd-keeper:
+    build:
+      context: ./dockerfile
+      dockerfile: Dockerfile-etcdkepper
+    privileged: true
+    networks:
+      app_net:
+        ipv4_address: 172.16.238.7
+    container_name: etcd-keeper
+
+networks:
+  app_net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.16.238.0/24

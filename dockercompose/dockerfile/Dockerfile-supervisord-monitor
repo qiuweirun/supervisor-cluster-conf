@@ -1,0 +1,22 @@
+FROM ubuntu:trusty
+RUN apt-get update && apt-get install -y \
+        git \
+        php5 \
+        python-dev \
+        python-setuptools \
+        python-pip
+
+
+RUN pip install j2cli -i http://pypi.doubanio.com/simple/
+RUN mkdir /app
+WORKDIR /app
+RUN git clone https://github.com/mlazarov/supervisord-monitor.git
+
+
+WORKDIR /app/supervisord-monitor
+COPY ./build/supervisord-monitor/* .
+EXPOSE 80
+ENV PORT 9001
+ENV CONTACT_EMAIL none@none.com
+ENV SERVER_NAME "Support Center"
+CMD ./start_monitor.sh

@@ -1,0 +1,6 @@
+FROM cym1102/nginxwebui:latest
+
+COPY ./build/nginxWebUi /home/nginxWebUI
+
+VOLUME ["/home/nginxWebUI"]
+ENTRYPOINT ["tini", "entrypoint.sh"]

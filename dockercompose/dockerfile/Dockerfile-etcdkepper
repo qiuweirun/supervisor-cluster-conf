@@ -1,0 +1,19 @@
+FROM ubuntu:latest
+MAINTAINER qiuweirun 1023102176@qq.com
+
+RUN \
+  apt-get update && \
+  apt-get install -y wget unzip
+
+WORKDIR /opt
+RUN mkdir etcdkeeper
+
+WORKDIR /usr
+RUN wget https://github.com/evildecay/etcdkeeper/releases/download/v0.7.6/etcdkeeper-v0.7.6-linux_x86_64.zip && unzip etcdkeeper-v0.7.6-linux_x86_64.zip && cp -r ./etcdkeeper/* /opt/etcdkeeper/
+
+WORKDIR /opt/etcdkeeper
+RUN chmod +x ./etcdkeeper
+
+EXPOSE 8080
+
+ENTRYPOINT ./etcdkeeper -h 0.0.0.0 -p 8080

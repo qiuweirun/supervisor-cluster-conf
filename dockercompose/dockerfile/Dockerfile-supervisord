@@ -1,0 +1,74 @@
+# ------------------------------------------------------------------------------
+# Based on a work at https://github.com/docker/docker.
+# ------------------------------------------------------------------------------
+# Pull base image.
+FROM ubuntu
+
+# Install Supervisor.
+RUN \
+  apt-get update && \
+  apt-get install -y libpam-cracklib supervisor wget && \
+  rm -rf /var/lib/apt/lists/* && \
+  sed -i 's/^\(\[supervisord\]\)$/\1\nnodaemon=true/' /etc/supervisor/supervisord.conf
+
+COPY ./build/supervisord.conf /etc/supervisor/
+
+# 拷贝演示程序进来
+RUN mkdir -m 777 /project
+COPY ./build/demo_website /project
+COPY ./build/demo_website2 /project
+RUN chmod +x /project/*
+
+# 下载安装confd
+WORKDIR /tmp
+RUN wget https://github.com/qiuweirun/confd/releases/download/v0.16.1/confd-0.16.1-linux-amd64 && \
+  mv confd-0.16.1-linux-amd64 /usr/local/bin/confd && \
+  chmod +x /usr/local/bin/confd
+# 配置模板数据 & 拷贝预定义的配置进来
+RUN mkdir -p /etc/confd/{conf.d,templates}
+COPY ./build/confd/app.toml /etc/confd/conf.d/
+COPY ./build/confd/app.tmpl /etc/confd/templates/
+# RUN sed -i 's/{{etcd-key}}/${ETCD_LISTEN_KEY}/g' /etc/confd/conf.d/app.toml && \
+#  sed -i 's/{{etcd-key}}/${ETCD_LISTEN_KEY}/g' /etc/confd/templates/app.tmpl
+RUN sed -i 's/{{etcd-key}}/\/services\/apps/g' /etc/confd/conf.d/app.toml && \
+  sed -i 's/{{etcd-key}}/\/services\/apps/g' /etc/confd/templates/app.tmpl
+
+# 启动confd /usr/local/bin/confd -watch -backend etcdv3 -node http://etcd:2379 &
+RUN echo '[group:confd]\n \
+programs=confd\n \
+priority=60\n \
+\n \
+[program:confd]\n \
+command = /usr/local/bin/confd -watch -backend etcdv3 -node http://etcd:2379\n \
+process_name=%(program_name)s\n \
+startsecs = 0\n \
+numprocs = 1\n \
+autostart = true\n \
+autorestart = true\n \
+stdout_logfile=/dev/stdout\n \
+stdout_logfile_maxbytes=0\n \
+stderr_logfile=/dev/stderr\n \
+stderr_logfile_maxbytes=0' > /etc/supervisor/conf.d/confd.conf
+
+# Define mountable directories.
+VOLUME ["/etc/supervisor/conf.d"]
+
+# ------------------------------------------------------------------------------
+# Security changes
+# - Determine runlevel and services at startup [BOOT-5180]
+RUN update-rc.d supervisor defaults
+
+# - Check the output of apt-cache policy manually to determine why output is empty [KRNL-5788]
+# RUN apt-get update | apt-get upgrade -y
+
+# - Install a PAM module for password strength testing like pam_cracklib or pam_passwdqc [AUTH-9262]
+RUN apt-get install libpam-cracklib -y
+RUN ln -s /lib/x86_64-linux-gnu/security/pam_cracklib.so /lib/security
+
+# Define working directory.
+WORKDIR /etc/supervisor/conf.d
+
+EXPOSE 9001 8088
+# ------------------------------------------------------------------------------
+# Start supervisor, define default command.
+CMD ["supervisord", "-c", "/etc/supervisor/supervisord.conf"]

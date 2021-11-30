@@ -1,0 +1,18 @@
+{{range $dir := lsdir "{{etcd-key}}"}}
+{{$ipsPath := printf "{{etcd-key}}/%s/ips" $dir}} {{ $ipsArr := split (getv $ipsPath) "," }}
+{{$base64Path := printf "{{etcd-key}}/%s/content" $dir}} {{ $base64 := getv $base64Path }}
+{{$serviceIp := getServiceIp}}
+{{range $index, $ip := $ipsArr}} {{if ne $base64 "" }} {{if eq $serviceIp $ip}}
+[group:{{base $dir}}]
+programs={{base $dir}}
+priority=20
+
+[program:{{base $dir}}]
+{{base64Decode $base64}}
+stdout_logfile=/dev/stdout
+stdout_logfile_maxbytes=0
+stderr_logfile=/dev/stderr
+stderr_logfile_maxbytes=0
+; 服务器IP：{{getServiceIp}}
+{{end}}{{end}}{{end}}
+{{end}}
