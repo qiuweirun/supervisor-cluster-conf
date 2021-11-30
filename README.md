@@ -35,6 +35,7 @@ docker-compose -f /path/to/docker-compose.yml up
 
 ## 效果演示
 * 访问`monitor.ui.com`，初始下三台web机只有`confd`的订阅者服务进程。
+---
 ![image](https://github.com/qiuweirun/supervisor-cluster-conf/blob/main/docs/images/init-view.png)
 ---
 * 访问`demo.website1.com`，为503错误，通过下面配置让服务跑起来
@@ -45,5 +46,6 @@ docker-compose -f /path/to/docker-compose.yml up
 ```
 * 发布完成后再访问`monitor.ui.com`，已经看到demo1的进程
 * 再次访问`demo.website1.com`看到如下页面：
+---
 ![image](https://github.com/qiuweirun/supervisor-cluster-conf/blob/main/docs/images/demo1.png)
 ---
