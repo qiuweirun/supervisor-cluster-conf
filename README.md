@@ -13,3 +13,37 @@
 * confd作为etcd的订阅者
 * `monitor.ui.com`为[supervisord-monitor](https://github.com/mlazarov/supervisord-monitor)服务，用于控制web机器进程的启用/停止
 * `admin.etcd.com`为往etcd服务发布配置的后台，由[etcd-kepper](https://github.com/evildecay/etcdkeeper)组成
+
+## 启动集群
+* 需安装docker、docker-compose
+```
+docker-compose -f /path/to/docker-compose.yml up
+```
+* 绑定如下host，然后再通过域名访问相应的服务
+```
+如果docker安装方式为Docker Toolbox，使用如下即可，否则把192.168.99.100换为你本机分配到的IP
+#站点1
+192.168.99.100 demo.website1.com
+#supervisor原生管理控制后台
+192.168.99.100 svadm.website1.com
+#开源管理后台
+192.168.99.100 monitor.ui.com
+#ETCD管理后台
+192.168.99.100 admin.etcd.com
+```
+* `192.168.99.100:8080`为[nginxWebUI](https://github.com/cym1102/nginxWebUI)服务，配置负载均衡
+
+## 效果演示
+![image](https://github.com/qiuweirun/supervisor-cluster-conf/blob/main/docs/images/net.jpg)
+---
+* 访问`monitor.ui.com`，初始下三台web机只有`confd`的订阅者服务进程。
+* 访问`demo.website1.com`，为503错误，通过下面配置让服务跑起来
+* 访问`admin.etcd.com`，发布如下配置。
+```
+/services/apps/demo1/ips       172.16.238.11,172.16.238.12,172.16.238.13
+/services/apps/demo1/content   Y29tbWFuZCA9IC9wcm9qZWN0L2RlbW9fd2Vic2l0ZQpwcm9jZXNzX25hbWU9JShwcm9ncmFtX25hbWUpcwpzdGFydHNlY3MgPSAwCm51bXByb2NzID0gMQphdXRvc3RhcnQgPSB0cnVlCmF1dG9yZXN0YXJ0ID0gdHJ1ZQ==
+```
+* 发布完成后再访问`monitor.ui.com`，已经看到demo1的进程
+* 再次访问`demo.website1.com`看到如下页面：
+![image](https://github.com/qiuweirun/supervisor-cluster-conf/blob/main/docs/images/net.jpg)
+---
