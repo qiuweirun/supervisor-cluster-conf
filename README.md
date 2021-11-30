@@ -13,9 +13,10 @@
 * confd作为etcd的订阅者
 * `monitor.ui.com`为[supervisord-monitor](https://github.com/mlazarov/supervisord-monitor)服务，用于控制web机器进程的启用/停止
 * `admin.etcd.com`为往etcd服务发布配置的后台，由[etcd-kepper](https://github.com/evildecay/etcdkeeper)组成
+* nginx-proxy为子网访问入口，整个子网只暴露80和8080端口。
 
 ## 启动集群
-* 需安装docker、docker-compose
+* 需先安装docker、docker-compose服务，如果使用如下命令
 ```
 docker-compose -f /path/to/docker-compose.yml up
 ```
