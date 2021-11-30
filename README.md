@@ -49,7 +49,8 @@ docker-compose -f /path/to/docker-compose.yml up
 ---
 ![image](https://github.com/qiuweirun/supervisor-cluster-conf/blob/main/docs/images/pub-view.png)
 ---
-* 再次访问`demo.website1.com`看到如下页面：
+* 再次访问`demo.website1.com`看到如下页面（这是demo1站点的内容）：
 ---
 ![image](https://github.com/qiuweirun/supervisor-cluster-conf/blob/main/docs/images/demo1.png)
 ---
+* 试试/services/apps/demo1/ips删减某些ip看看会发生什么？
