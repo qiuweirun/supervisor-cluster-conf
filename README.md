@@ -32,7 +32,7 @@ docker-compose -f /path/to/dockercompose/docker-compose.yml up
 #ETCD管理后台
 192.168.99.100 admin.etcd.com
 ```
-* `192.168.99.100:8080`为[nginxWebUI](https://github.com/cym1102/nginxWebUI)服务，配置转发域名以及负载均衡
+* `192.168.99.100:8080`为[nginxWebUI](https://github.com/cym1102/nginxWebUI)服务，配置域名转发以及负载均衡
 
 ## 效果演示
 1) 访问`monitor.ui.com`，初始下三台web机只有`confd`的订阅者服务进程。
