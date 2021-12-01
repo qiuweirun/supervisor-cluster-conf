@@ -3,7 +3,7 @@
 
 ## 前言
 使用supervisor来管理常驻进程、维护常驻进程的运行。然后启用/停止进程可通过开源的第三方web-ui实现管理，如：[supervisord-monitor](https://github.com/mlazarov/supervisord-monitor)。
-这里有的问题是如果是一个集群机器下，当要变更supervisor的进程配置文件需要在每台机器上执行`supervisorctl update`命令才能生效，那么能否通过配置方式让集群的每台机器生效呢？
+这里有的问题是如果是一个集群机器下，当要变更supervisor的进程配置文件需要在每台机器上执行`supervisorctl update`命令才能生效，那么能否通过后台配置方式来达到这种效果呢？
 
 ## 架构图
 ![image](https://github.com/qiuweirun/supervisor-cluster-conf/blob/main/docs/images/net.jpg)
