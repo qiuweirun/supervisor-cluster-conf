@@ -3,7 +3,7 @@
 
 ## 前言
 使用supervisor来管理常驻进程、维护常驻进程的运行。然后启用/停止进程可通过开源的第三方web-ui实现管理，如：[supervisord-monitor](https://github.com/mlazarov/supervisord-monitor)。
-这里有的问题是如果是一个集群机器下，当要变更supervisor的进程配置文件需要在每台机器上执行`supervisorctl update`命令才能生效，那么能否通过配置方式让集群的每台机器生效呢？
+这里有的问题是如果是一个集群机器下，当要变更supervisor的进程配置文件需要在每台机器上执行`supervisorctl update`命令才能生效，那么能否通过后台配置方式来达到这种效果呢？
 
 ## 架构图
 ![image](https://github.com/qiuweirun/supervisor-cluster-conf/blob/main/docs/images/net.jpg)
@@ -16,7 +16,7 @@
 * `nginx-proxy`为子网访问入口，整个子网只暴露80和8080端口，通过域名的访问均通过80端口进行代理转发。
 
 ## 启动集群
-* 需先安装docker、docker-compose服务，如果使用如下命令
+* 需先安装docker、docker-compose服务，然后使用如下命令
 ```
 docker-compose -f /path/to/dockercompose/docker-compose.yml up
 ```
@@ -32,7 +32,7 @@ docker-compose -f /path/to/dockercompose/docker-compose.yml up
 #ETCD管理后台
 192.168.99.100 admin.etcd.com
 ```
-* `192.168.99.100:8080`为[nginxWebUI](https://github.com/cym1102/nginxWebUI)服务，配置转发域名以及负载均衡
+* `192.168.99.100:8080`为[nginxWebUI](https://github.com/cym1102/nginxWebUI)服务，配置域名转发以及负载均衡
 
 ## 效果演示
 1) 访问`monitor.ui.com`，初始下三台web机只有`confd`的订阅者服务进程。
