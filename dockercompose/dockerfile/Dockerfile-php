@@ -1,0 +1,69 @@
+# ------------------------------------------------------------------------------
+# Based on a work at https://github.com/docker/docker.
+# ------------------------------------------------------------------------------
+# Pull base image.
+FROM ubuntu
+
+# Install Supervisor.
+RUN \
+  apt-get update && \
+  apt-get install -y libpam-cracklib supervisor vim && \
+  rm -rf /var/lib/apt/lists/* && \
+  sed -i 's/^\(\[supervisord\]\)$/\1\nnodaemon=true/' /etc/supervisor/supervisord.conf
+
+COPY ./build/supervisord.conf /etc/supervisor/
+
+# 不要交互输入
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y php7.4
+
+# 其它模块
+# RUN apt-get install php-pear php7.4-curl php7.4-dev php7.4-gd php7.4-mbstring php7.4-zip php7.4-mysql php7.4-xml
+
+# 演示程序脚本
+RUN mkdir /www && echo '<?php \n \
+ \n \
+while(true) { \n \
+        echo "sleep 3s/\r/\n"; \n \
+        sleep(30); \n \
+}' > /www/test.php
+
+# 交给sup托管
+RUN echo '[group:php] \n \
+programs=php \n \
+priority=20 \n \
+ \n \
+[program:php] \n \
+command = php /www/test.php \n \
+process_name=%(program_name)s_%(process_num)02d \n \
+startsecs = 0 \n \
+numprocs = 5 \n \
+autostart = true \n \
+autorestart = true \n \
+stdout_logfile=/dev/stdout \n \
+stdout_logfile_maxbytes=0 \n \
+stderr_logfile=/dev/stderr \n \
+stderr_logfile_maxbytes=0 \n \
+environment=E_DEBUG=1' > /etc/supervisor/conf.d/confd.conf
+
+# Define mountable directories.
+VOLUME ["/etc/supervisor/conf.d"]
+
+# ------------------------------------------------------------------------------
+# Security changes
+# - Determine runlevel and services at startup [BOOT-5180]
+RUN update-rc.d supervisor defaults
+
+# - Check the output of apt-cache policy manually to determine why output is empty [KRNL-5788]
+# RUN apt-get update | apt-get upgrade -y
+
+# - Install a PAM module for password strength testing like pam_cracklib or pam_passwdqc [AUTH-9262]
+RUN apt-get install libpam-cracklib -y
+RUN ln -s /lib/x86_64-linux-gnu/security/pam_cracklib.so /lib/security
+
+# Define working directory.
+WORKDIR /etc/supervisor/conf.d
+
+EXPOSE 9001 8088
+# ------------------------------------------------------------------------------
+# Start supervisor, define default command.
+CMD ["supervisord", "-c", "/etc/supervisor/supervisord.conf"]

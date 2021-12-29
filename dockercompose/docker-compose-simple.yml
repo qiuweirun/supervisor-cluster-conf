@@ -1,0 +1,35 @@
+version: "3.5"
+services:
+  # web1-php
+  web1-php:
+    build:
+      context: ./dockerfile
+      dockerfile: Dockerfile-php
+    privileged: true
+    networks:
+      app_net:
+        ipv4_address: 172.16.238.2
+    container_name: web1-php
+
+  # supervisor manager ui
+  simple-ui:
+    image: banjocat/supervisord-monitor
+    privileged: true
+    environment:
+      - SERVERS=web1-php=172.16.238.2
+      - USERNAME=
+      - PASSWORD=
+    ports:
+      - 8090:80
+    networks:
+      app_net:
+        ipv4_address: 172.16.238.3
+    container_name: simple-ui
+
+networks:
+  app_net:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.16.238.0/24
