@@ -12,6 +12,7 @@ services:
     networks:
       app_net:
         ipv4_address: 172.16.238.13
+    hostname: web1-03
     container_name: web1-03
   # web1-02
   web1-02:
@@ -25,6 +26,7 @@ services:
     networks:
       app_net:
         ipv4_address: 172.16.238.12
+    hostname: web1-02
     container_name: web1-02
   # web1-01
   web1-01:
@@ -38,6 +40,7 @@ services:
     networks:
       app_net:
         ipv4_address: 172.16.238.11
+    hostname: web1-01
     container_name: web1-01
 
   # nginx-proxy access point
